@@ -87,8 +87,8 @@ def sin_taylor_series(x):
     return summation
 
 # print(sin_taylor_series(-math.pi / 2))
-print(sin_taylor_series(math.pi / 4))
-print(sin_taylor_series(-math.pi / 4))
+# print(sin_taylor_series(math.pi / 4))
+# print(sin_taylor_series(-math.pi / 4))
 
 
 # print(calculate_two_point_one(0.000001))

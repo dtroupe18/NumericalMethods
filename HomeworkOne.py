@@ -13,11 +13,14 @@ def raise_to_negative_exponent(iterations):
 
 
 def print_list(x):
+    last = x[-1]
     sys.stdout.write("[")
     for value in x:
         sys.stdout.write("%.25f" % value)
-        sys.stdout.write(", ")
-    sys.stdout.write("]")
+        if value != last:
+            sys.stdout.write(", ")
+        else:
+            sys.stdout.write("]")
 
 
 # x = raise_to_negative_exponent(50)

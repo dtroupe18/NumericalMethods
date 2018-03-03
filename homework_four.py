@@ -52,7 +52,7 @@ print("second: ", second)
 print("thirds: ", third)
 print("fourth: ", fourth)
 print("fifth: ", fifth)
-print("sexith: ", sixth)
+print("sixth: ", sixth)
 
 
 

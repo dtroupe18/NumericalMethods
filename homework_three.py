@@ -1,6 +1,6 @@
 import sys
 import math
-import HomeworkOne
+import homework_one
 
 
 def calculate_pi(x):
@@ -179,7 +179,7 @@ def calc_value_at_derivatives(x):
 
 # der_values = calc_value_at_derivatives(0.6936330309301341)
 der_values = calc_value_at_derivatives(0.6931525202806265)
-HomeworkOne.print_list(der_values)
+homework_one.print_list(der_values)
 
 
 def apply_modified_newton_raphson(m):

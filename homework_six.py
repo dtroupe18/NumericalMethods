@@ -77,6 +77,41 @@ def composite_simpson_method(a, b, n):
            (((b - a) / 180) * h ** 4 * calc_f_quad_prime(b))
 
 
+def power_series_for_exponential_function(n):
+    """
+     sum (-1)^n / (2n + 1) * n!
+    :param n: int - number of terms in the summation
+    :return: double - value of the summation
+    """
+    summation = 0
+    for i in range(0, n + 1):
+        summation += ((-1) ** i) / ((2 * i + 1) * math.factorial(i))
+    return summation
+
+
+def calc_exact_integral():
+    return math.pi * math.erf(1) / 2
+
+
+def question_4_2():
+    # When the alternating series is truncated the max error is the next term.
+    #
+    error_bound = 0.0000005
+    summation = 0
+
+    for i in range(0, 51):
+        current_term = ((-1) ** i) / ((2 * i + 1) * math.factorial(i))
+
+        if abs(current_term) < error_bound:
+            return i - 1, summation
+
+        summation += current_term
+
+    return "Error: finished loop and did not find a solution"
+
+
+print(question_4_2())
+
 # print(calc_f_double_prime(1))
 
 # print(composite_trapezoidal_method(0, 1, 10))
@@ -91,3 +126,10 @@ def composite_simpson_method(a, b, n):
 # print("n = 200: ", composite_simpson_method(0, 1, 200))
 # print("n = 400: ", composite_simpson_method(0, 1, 400))
 
+# for x in range(0, 11):
+#     factor = 1/10
+#     x *= factor
+#     print("f(", x ,"): ", calc_f_quad_prime(x))
+
+# for x in range(20):
+#     print("n = ", x, ": ",  power_series_for_exponential_function(x))

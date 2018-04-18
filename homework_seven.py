@@ -2,9 +2,10 @@ testing_matrix = [[1, 3, 3], [1, 4, 3], [1, 3, 4]]
 testing_matrix_two = [[1, 1, 1], [2, 3, 5], [4, 0, 5]]
 
 
-def print_matrix(matrix):
+def print_matrix(matrix, augmented=True):
     """
     :param matrix: 2D list
+    :param augmented: bool whether the matrix is augmented with the identity matrix
     :return: nice print out of the matrix
     """
     num_rows = len(matrix)
@@ -17,7 +18,7 @@ def print_matrix(matrix):
             elif j == num_cols - 1:
                 print(float(matrix[i][j]), "]", end='', sep='')
                 print()
-            elif j == 2:
+            elif j == 2 and augmented:
                 print(float(matrix[i][j]), " | ", end='', sep='')
             else:
                 print(float(matrix[i][j]), ", ", end='', sep='')
@@ -109,16 +110,10 @@ def diag(B):
     :param B: 2D matrix augmented with an identity matrix in upper triangular form
     :return: Diagonalized matrix
     """
-    print("diagonal start")
-    print_matrix(B)
 
     matrix = B
     num_rows = len(matrix)
     num_cols = len(matrix[0]) // 2
-
-    print("num_cols", num_cols)
-    for w in range(num_cols):
-        print("w:", w)
 
     for i in range(num_rows):
         for j in range(num_cols):
@@ -133,10 +128,6 @@ def diag(B):
                     adjusted_row.append(x)
                 matrix[i] = adjusted_row
 
-    print()
-    print("done loops")
-    print_matrix(matrix)
-
     # eliminate values in the upper half of the matrix
     for i in range(num_rows):
         for j in range(num_cols):
@@ -147,7 +138,8 @@ def diag(B):
                 # use combine rows in the opposite order since we want to cancel above not below
                 combined_row = combine_rows(row_to_add, row_to_adjust, j)
                 matrix[i] = combined_row
-                print_matrix(matrix)
+
+    return matrix
 
 
 def inv(A):
@@ -157,22 +149,18 @@ def inv(A):
     """
     augmented = id_border(A)
     gauss_eliminated_matrix = gauss_eliminate(augmented)
-    print_matrix(gauss_eliminated_matrix)
-    # diag(gauss_eliminated_matrix)
+    diagonal_matrix = diag(gauss_eliminated_matrix)
+
+    size = len(diagonal_matrix)
+    inverse = []
+
+    for i in range(size):
+        full_row = diagonal_matrix[i]
+        inverse.append(full_row[size:])
+
+    return inverse
 
 
-inv(testing_matrix_two)
+inverse = inv(testing_matrix)
+print_matrix(inverse, False)
 
-# for i in range(num_rows):
-#     for j in range(num_cols):
-#         # Ignore the main diagonal
-#         if i != j and matrix[i][j] != 0:
-#             matrix[i] = combine_rows(matrix[i], matrix[i + 1], j)
-#
-#             print()
-#             print("adjusted matrix for i", i, "j", j)
-#             print_matrix(matrix)
-#
-# print()
-# print("Loops over")
-# print_matrix(matrix)

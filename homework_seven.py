@@ -1,5 +1,9 @@
+import copy
+
 testing_matrix = [[1, 3, 3], [1, 4, 3], [1, 3, 4]]
 testing_matrix_two = [[1, 1, 1], [2, 3, 5], [4, 0, 5]]
+no_inverse = [[1, 6, 4], [2, 4, -1], [-1, 2, 5]]
+no_inverse_two = [[3, 4], [6, 8]]
 
 
 def print_matrix(matrix, augmented=True):
@@ -18,7 +22,7 @@ def print_matrix(matrix, augmented=True):
             elif j == num_cols - 1:
                 print(float(matrix[i][j]), "]", end='', sep='')
                 print()
-            elif j == 2 and augmented:
+            elif j == (num_cols // 2) - 1 and augmented:
                 print(float(matrix[i][j]), " | ", end='', sep='')
             else:
                 print(float(matrix[i][j]), ", ", end='', sep='')
@@ -31,7 +35,8 @@ def id_border(A):
     :param A: n x n square matrix (i.e a 2D list of lists)
     :return: matrix in the the form [A|I]
     """
-    size = len(A)
+    new_list = copy.deepcopy(A)
+    size = len(new_list)
 
     for i in range(size):
         identity_row = []
@@ -42,9 +47,64 @@ def id_border(A):
             else:
                 identity_row.append(1)
 
-        A[i].extend(identity_row)
+        new_list[i].extend(identity_row)
 
-    return A
+    return new_list
+
+
+def get_identity_matrix(n):
+    """
+    :param n: int size for nxn identity matrix
+    :return: 2D list where the main diagonal is all 1's
+    """
+    identity_matrix = []
+
+    for i in range(n):
+        row = []
+        for j in range(n):
+            if i != j:
+                row.append(0)
+            else:
+                row.append(1)
+        identity_matrix.append(row)
+
+    # print_matrix(identity_matrix, False)
+    return identity_matrix
+
+
+def get_zero_matrix(rows, columns):
+    """
+    :param rows: int number of rows in zero matrix
+    :param columns: int number of columns in zero matrix
+    :return: n x n 2D list of zeros
+    """
+    zero_matrix = []
+
+    for i in range(rows):
+        row = []
+        for j in range(columns):
+            row.append(0)
+        zero_matrix.append(row)
+
+    return zero_matrix
+
+
+def multiply_matrices(A, B):
+    """
+    :param A: 2D list
+    :param B: 2D list
+    :return: 2D list
+    """
+    if len(A[0]) != len(B):
+        return "Cannot multiply matrices"
+
+    result = get_zero_matrix(len(A), len(B[0]))
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
+
+    return result
 
 
 def combine_rows(row_a, row_b, col_index):
@@ -86,6 +146,8 @@ def gauss_eliminate(B):
                 for k in range(i + 1, num_rows):
                     next_row = matrix[k]
                     matrix[k] = combine_rows(row, next_row, j)
+                    print()
+                    print_matrix(matrix)
 
                 # Check if we are on the last row and column
                 if i + 1 == num_rows and j == num_cols - 1:
@@ -103,6 +165,8 @@ def gauss_eliminate(B):
 
         if i < num_rows - 1:
             i += 1
+        else:
+            return matrix
 
 
 def diag(B):
@@ -110,7 +174,6 @@ def diag(B):
     :param B: 2D matrix augmented with an identity matrix in upper triangular form
     :return: Diagonalized matrix
     """
-
     matrix = B
     num_rows = len(matrix)
     num_cols = len(matrix[0]) // 2
@@ -147,10 +210,22 @@ def inv(A):
     :param A: n x n square matrix (i.e a 2D list of lists)
     :return: inverse or "singular"
     """
-    augmented = id_border(A)
+    list_copy = copy.deepcopy(A)
+    augmented = id_border(list_copy)
     gauss_eliminated_matrix = gauss_eliminate(augmented)
-    diagonal_matrix = diag(gauss_eliminated_matrix)
 
+    # If the matrix has an all zero row after elimination then it is singular
+    for row in gauss_eliminated_matrix:
+        all_zero_row = True
+        left_side = row[:len(A)]
+        for value in left_side:
+            if value != 0:
+                all_zero_row = False
+                break
+        if all_zero_row:
+            return "Singular"
+
+    diagonal_matrix = diag(gauss_eliminated_matrix)
     size = len(diagonal_matrix)
     inverse = []
 
@@ -161,6 +236,18 @@ def inv(A):
     return inverse
 
 
-inverse = inv(testing_matrix)
-print_matrix(inverse, False)
+inverse = inv(no_inverse_two)
+if inverse != "Singular":
+    print_matrix(inverse, False)
+else:
+    print(inverse)
 
+
+# result = multiply_matrices(testing_matrix, inverse)
+# print_matrix(result, False)
+
+
+# first = get_identity_matrix(3)
+# second = get_identity_matrix(5)
+#
+# print(multiply_matrices(first, second))

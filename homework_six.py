@@ -104,13 +104,13 @@ def question_4_2():
 
         if abs(current_term) < error_bound:
             return i - 1, summation
-
-        summation += current_term
+        else:
+            summation += current_term
 
     return "Error: finished loop and did not find a solution"
 
 
-print(question_4_2())
+# print(question_4_2())
 
 # print(calc_f_double_prime(1))
 

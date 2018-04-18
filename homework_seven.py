@@ -36,18 +36,13 @@ def id_border(A):
         identity_row = []
 
         for j in range(size):
-            # print("j: ", j)
             if i != j:
                 identity_row.append(0)
             else:
                 identity_row.append(1)
 
-        # print("identity row: ", identity_row)
         A[i].extend(identity_row)
-        # print("id_border progress: ", A)
 
-    # print("id_border: ")
-    # print_matrix(A)
     return A
 
 
@@ -56,21 +51,6 @@ def combine_rows(row_a, row_b, col_index):
     lower_value = row_b[col_index]
     factor = lower_value / pivot * -1
 
-    # if pivot > 0 and lower_value > 0:
-    #     factor = lower_value / pivot * -1
-    #
-    # else:  # pivot < 0 and lower_value < 0:
-    #     factor = lower_value / pivot
-
-
-    # print()
-    # print("row_a", row_a)
-    # print("row_b", row_b)
-    # print("pivot", pivot)
-    # print("lower_value", lower_value)
-    # print("factor for column", col_index, "is", factor)
-    # print()
-
     new_row_b = []
     for i in range(len(row_a)):
         value = row_a[i]
@@ -78,94 +58,27 @@ def combine_rows(row_a, row_b, col_index):
         value += row_b[i]
         new_row_b.append(value)
 
-        # print("combined row", new_row_b)
-
     return new_row_b
-
-
-def gauss_elim(B):
-    """
-    Applies Guassian elimination to a matrix
-    :param B: matrix, 2D list
-    :return:
-    """
-    matrix = B
-    print_matrix(matrix)
-    num_rows = len(matrix)
-    print("number of rows", num_rows)
-    num_cols = 1 + len(matrix[0]) // 2
-
-    # assume no all zero rows for now
-    #
-    i = 0
-    while i < num_rows:
-        for j in range(num_cols):
-            print("(", i, j, ")")
-            if matrix[i][j] != 0:
-                # Eliminate other values in that column
-                #
-                row = matrix[i]
-                # print("row", row)
-
-                for k in range(i + 1, num_rows):
-                    next_row = matrix[k]
-                    # print("next_row", next_row)
-                    # print()
-
-                    matrix[k] = combine_rows(row, next_row, j)
-                    # print("new next row ", matrix[k])
-                    # print()
-
-                # Check if we are on the last row
-                #
-                # if i + 1 == num_rows:
-                #     pivot = row[j]
-                #     for value in row:
-                #         value /= pivot
-                #     matrix[i] = row
-
-                print_matrix(matrix)
-                print()
-                i += 1
-            elif j == num_cols - 1:
-                i += 1
-
-
-
-    # for i in range(num_rows):
-    #     for j in range(num_cols):
-    #         # print("i, j", i, j)
-    #         # print(matrix[i][j])
-    #
-    #         if matrix[i][j] != 0:
 
 
 def gauss_eliminate(B):
     """
-    Applies Guassian elimination to a matrix
+    Assume no all zero rows for now: Applies Guassian elimination to a matrix
     :param B: matrix, 2D list
     :return:
     """
     matrix = B
-    print_matrix(matrix)
     num_rows = len(matrix)
-    num_cols = 1 + len(matrix[0]) // 2
+    num_cols = len(matrix[0]) // 2
 
-    # assume no all zero rows for now
-    #
     i = 0
     j = 0
     reset_j = False
 
     while i < num_rows:
-        # j = 0
         while j < num_cols:
-            print("(", i, ",", j, ")")
-            # print("value: ", matrix[i][j])
-
             if matrix[i][j] != 0:
                 # Eliminate other values in that column
-                #
                 row = matrix[i]
 
                 # This loop only works if we aren't on the last row!
@@ -173,38 +86,68 @@ def gauss_eliminate(B):
                     next_row = matrix[k]
                     matrix[k] = combine_rows(row, next_row, j)
 
-                # Check if we are on the last row, if we are eliminate the
-                if i + 1 == num_rows:
-                    print("ON THE LAST FUCKING ROW")
-                    if j == num_cols - 2:
-                        print("WE ARE FUCKING DONE!")
-                        return matrix
+                # Check if we are on the last row and column
+                if i + 1 == num_rows and j == num_cols - 1:
+                    return matrix
 
-                    # pivot = row[j]
-                    # for value in row:
-                    #     value /= pivot
-                    # matrix[i] = row
-
-                # Done with this row increment i and reset j
-                # print()
-                # print("i: ", i)
                 if i < num_rows - 1:
                     i += 1
                 reset_j = True
-                print_matrix(matrix)
 
             if reset_j:
                 j = 0
                 reset_j = False
-                # print()
-                # print("2 i: ", i)
             else:
                 j += 1
 
         if i < num_rows - 1:
             i += 1
-            # print()
-            # print("3 i: ", i)
+
+
+def diag(B):
+    """
+    :param B: 2D matrix augmented with an identity matrix in upper triangular form
+    :return: Diagonalized matrix
+    """
+    print("diagonal start")
+    print_matrix(B)
+
+    matrix = B
+    num_rows = len(matrix)
+    num_cols = len(matrix[0]) // 2
+
+    print("num_cols", num_cols)
+    for w in range(num_cols):
+        print("w:", w)
+
+    for i in range(num_rows):
+        for j in range(num_cols):
+            # Get main diagonal to be all 1's
+            if i == j and matrix[i][j] != 1:
+                value = matrix[i][j]
+                row = matrix[i]
+                adjusted_row = []
+
+                for x in row:
+                    x /= value
+                    adjusted_row.append(x)
+                matrix[i] = adjusted_row
+
+    print()
+    print("done loops")
+    print_matrix(matrix)
+
+    # eliminate values in the upper half of the matrix
+    for i in range(num_rows):
+        for j in range(num_cols):
+            if i != j and matrix[i][j] != 0:
+                row_to_adjust = matrix[i]
+                # use the row that corresponds to the column value because it has a 1 in that spot
+                row_to_add = matrix[j]
+                # use combine rows in the opposite order since we want to cancel above not below
+                combined_row = combine_rows(row_to_add, row_to_adjust, j)
+                matrix[i] = combined_row
+                print_matrix(matrix)
 
 
 def inv(A):
@@ -213,48 +156,23 @@ def inv(A):
     :return: inverse or "singular"
     """
     augmented = id_border(A)
-    gauss_eliminate(augmented)
+    gauss_eliminated_matrix = gauss_eliminate(augmented)
+    print_matrix(gauss_eliminated_matrix)
+    # diag(gauss_eliminated_matrix)
 
 
 inv(testing_matrix_two)
 
-
-def while_loop_hell(matrix):
-
-    num_rows = len(matrix)
-    num_cols = len(matrix[0])
-
-    i = 0
-
-    while i < num_rows:
-        j = 0
-        while j < num_cols:
-            print("(", i, ",", j, ")")
-            print("value: ", matrix[i][j])
-            j += 1
-        i += 1
-
-# while_loop_hell(testing_matrix_two)
-
-# SOME HOW THE SIZE OF THE ROW IS INCREASING
-
-
 # for i in range(num_rows):
-#     # print_matrix(matrix)
-#
 #     for j in range(num_cols):
-#         print("i, j", i, j)
-#         value = matrix[i][j]
-#         print("value", value)
-#         if matrix[i][j] != 0:
-#             # Eliminate the other values in that column
-#             row = matrix[i]
-#             # print("working on row: ", row)
+#         # Ignore the main diagonal
+#         if i != j and matrix[i][j] != 0:
+#             matrix[i] = combine_rows(matrix[i], matrix[i + 1], j)
 #
-#             for k in range(i + 1, num_rows):
-#                 next_row = matrix[k]
-#                 # print("next row: ", next_row)
-#                 matrix[k] = combine_rows(row, next_row, j)
+#             print()
+#             print("adjusted matrix for i", i, "j", j)
+#             print_matrix(matrix)
 #
-#             # print_matrix(matrix)
-#             break
+# print()
+# print("Loops over")
+# print_matrix(matrix)

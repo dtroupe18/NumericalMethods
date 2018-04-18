@@ -118,9 +118,6 @@ def combine_rows(row_a, row_b, col_index):
         value = row_a[i]
         value *= factor
         value += row_b[i]
-        if value < 0.0000000001:
-            # print("round off error")
-            value = 0.0
         new_row_b.append(value)
 
     return new_row_b
@@ -136,14 +133,9 @@ def gauss_eliminate(B):
     num_rows = len(matrix)
     num_cols = len(matrix[0]) // 2
 
-    i = 0
-    j = 0
-    reset_j = False
-
-    while i < num_rows:
-        while j < num_cols:
-            if matrix[i][j] != 0:
-                # Eliminate other values in that column
+    for i in range(num_rows):
+        for j in range(num_cols):
+            if i == j:
                 row = matrix[i]
 
                 # This loop only works if we aren't on the last row!
@@ -152,25 +144,7 @@ def gauss_eliminate(B):
                     matrix[k] = combine_rows(row, next_row, j)
                     print()
                     print_matrix(matrix)
-
-                # Check if we are on the last row and column
-                if i + 1 == num_rows and j == num_cols - 1:
-                    return matrix
-
-                if i < num_rows - 1:
-                    i += 1
-                reset_j = True
-
-            if reset_j:
-                j = 0
-                reset_j = False
-            else:
-                j += 1
-
-        if i < num_rows - 1:
-            i += 1
-        else:
-            return matrix
+    return matrix
 
 
 def diag(B):
@@ -278,44 +252,47 @@ def get_m_n(n, a_n):
     return m_n
 
 
+# print("**********************")
+# print()
+# testing_matrix_inverse = inv(testing_matrix)
+# print_matrix(testing_matrix_inverse)
+#
+# hope = multiply_matrices(testing_matrix, testing_matrix_inverse)
+# print("**********************")
+# print_matrix(hope, False)
+
+
+
+
 # h_5 = get_h_n(5)
 # h_5_inverse = inv(h_5)
-#
-# print("h_5")
-# print_matrix(h_5, False)
-# print("**********************")
-# print("h_5_inverse")
-# print_matrix(h_5_inverse, False)
+# # print("**********************")
+# # print()
+# # print_matrix(h_5_inverse, False)
 #
 #
 # h_inverse_h = multiply_matrices(h_5_inverse, h_5)
+# print("$$$$$$$$$$$$$$$$$$$$$$$$$$")
 # print_matrix(h_inverse_h, False)
 
 
-# print_matrix(h_5, False)
-
-#print()
-
-# h_5_inverse = inv(h_5)
-# if h_5_inverse != "Singular":
-#     print_matrix(h_5_inverse, False)
-# else:
-#     print(h_5_inverse)
-
 
 
 M_5 = get_m_n(5, [0, 0.1, 0.2, 0.3, 0.4])
+# # print_matrix(M_5, False)
+#
 M_5_inverse = inv(M_5)
 
-print("\n\n*************************************")
-M_5_M_5_inverse = multiply_matrices(M_5, M_5_inverse)
+# print("\n\n*************************************")
+# print_matrix(M_5_inverse, False)
+M_5_M_5_inverse = multiply_matrices(M_5_inverse, M_5)
 print_matrix(M_5_M_5_inverse, False)
-
-print("\n\n*************************************")
-M_5 = get_m_n(5, [0, 0.1, 0.2, 0.3, 0.4])
-M_5_inverse = inv(M_5)
-M_5_inverse_M_5 = multiply_matrices(M_5_inverse, M_5)
-print_matrix(M_5_inverse_M_5, False)
+#
+# print("\n\n*************************************")
+# M_5 = get_m_n(5, [0, 0.1, 0.2, 0.3, 0.4])
+# M_5_inverse = inv(M_5)
+# M_5_inverse_M_5 = multiply_matrices(M_5_inverse, M_5)
+# print_matrix(M_5_inverse_M_5, False)
 
 
 

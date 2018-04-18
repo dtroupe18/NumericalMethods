@@ -258,3 +258,50 @@ def while_loop_hell(matrix):
 #
 #             # print_matrix(matrix)
 #             break
+
+
+def gauss_eliminate_copy(B):
+    """
+    Assume no all zero rows for now: Applies Gaussian elimination to a matrix
+    :param B: matrix, 2D list
+    :return:
+    """
+    matrix = B
+    num_rows = len(matrix)
+    num_cols = len(matrix[0]) // 2
+
+    i = 0
+    j = 0
+    reset_j = False
+
+    while i < num_rows:
+        while j < num_cols:
+            if matrix[i][j] != 0:
+                # Eliminate other values in that column
+                row = matrix[i]
+
+                # This loop only works if we aren't on the last row!
+                for k in range(i + 1, num_rows):
+                    next_row = matrix[k]
+                    matrix[k] = combine_rows(row, next_row, j)
+                    print()
+                    print_matrix(matrix)
+
+                # Check if we are on the last row and column
+                if i + 1 == num_rows and j == num_cols - 1:
+                    return matrix
+
+                if i < num_rows - 1:
+                    i += 1
+                reset_j = True
+
+            if reset_j:
+                j = 0
+                reset_j = False
+            else:
+                j += 1
+
+        if i < num_rows - 1:
+            i += 1
+        else:
+            return matrix
